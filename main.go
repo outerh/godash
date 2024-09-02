@@ -1,6 +1,13 @@
 package godash
 
-import "fmt"
+import (
+	"bytes"
+	"fmt"
+	"os"
+	"runtime/debug"
+)
+
+// var buffer = make([]byte, 1024)
 
 func Expect(condition bool, message ...any) {
 	if !condition {
@@ -11,6 +18,18 @@ func Expect(condition bool, message ...any) {
 		if len(message) > 1 {
 			msg = fmt.Sprintf(message[0].(string), message[1:]...)
 		}
-		panic(msg)
+		fmt.Println("[godash] Expect: ", msg)
+
+		var rune_index int
+		stack_trace := debug.Stack()
+
+		// TODO: runtime.callers ?
+		for range 5 {
+			rune_index = bytes.IndexByte(stack_trace, '\n')
+			stack_trace = stack_trace[rune_index+1:]
+		}
+
+		fmt.Printf("[godash] %s\n", stack_trace)
+		os.Exit(1)
 	}
 }
