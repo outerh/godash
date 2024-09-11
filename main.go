@@ -9,6 +9,14 @@ import (
 
 // var buffer = make([]byte, 1024)
 
+func Map[T, R any](xs []T, f func(T) R) []R {
+	ys := make([]R, 0, len(xs))
+	for _, x := range xs {
+		ys = append(ys, f(x))
+	}
+	return ys
+}
+
 func Expect(condition bool, message ...any) {
 	if !condition {
 		msg := "Expectation not met"
